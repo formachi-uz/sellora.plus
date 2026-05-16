@@ -1,1 +1,443 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sellora Plus — Web sayt, katalog va buyurtma tizimlari</title>
+  <meta name="description" content="Sellora Plus kichik bizneslar uchun web sayt, online katalog, Telegram buyurtma tizimi va admin panel yaratadi.">
+  <meta property="og:title" content="Sellora Plus — Web sayt, katalog va buyurtma tizimlari">
+  <meta property="og:description" content="Kichik bizneslar uchun web sayt, online katalog, Telegram buyurtma tizimi va admin panel yechimlari.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sellora Plus">
+  <meta name="theme-color" content="#05070b">
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="%2305070b"/><path d="M18 34c7-15 25-18 33-7-8-4-18-2-25 5-5 5-10 6-14 2Z" fill="%23fff"/><path d="M46 31c-7 15-25 18-33 7 8 4 18 2 25-5 5-5 10-6 14-2Z" fill="%2300e5ff"/></svg>'>
+  <style>
+    :root {
+      --bg: #05070b;
+      --bg-soft: #090d14;
+      --surface: rgba(13, 18, 27, 0.78);
+      --surface-strong: rgba(18, 25, 37, 0.92);
+      --line: rgba(255, 255, 255, 0.1);
+      --line-strong: rgba(0, 229, 255, 0.28);
+      --text: #f7fbff;
+      --muted: #9aa8b8;
+      --soft: #d9e7f7;
+      --cyan: #00e5ff;
+      --cyan-2: #38bdf8;
+      --blue: #2f80ff;
+      --danger: #ff5f7a;
+      --success: #45f0b5;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      --radius: 8px;
+      --container: 1180px;
+    }
 
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(180deg, rgba(0, 229, 255, 0.055), transparent 18rem),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        var(--bg);
+      background-size: auto, 64px 64px, 64px 64px, auto;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body.no-scroll { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    img, svg { display: block; max-width: 100%; }
+
+    .container {
+      width: min(var(--container), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .section { padding: 88px 0; position: relative; }
+    .section.compact { padding-top: 64px; }
+
+    .section-header {
+      max-width: 760px;
+      margin-bottom: 34px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      color: var(--cyan);
+      background: rgba(0, 229, 255, 0.06);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.8);
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 760px;
+      margin: 22px 0 18px;
+      font-size: clamp(42px, 7vw, 82px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 14px 0 12px;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    h3 { margin-bottom: 10px; font-size: 20px; line-height: 1.2; letter-spacing: 0; }
+    .lead { max-width: 710px; color: var(--soft); font-size: clamp(17px, 2vw, 20px); }
+    .muted { color: var(--muted); }
+    .accent { color: var(--cyan); }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(5, 7, 11, 0.82);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: max-content;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .logo-shell {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 50%;
+      background: #070a10;
+      box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.06), 0 14px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .logo-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .logo-img.is-loaded { opacity: 1; }
+    .logo-fallback { width: 36px; height: 36px; transition: opacity 0.2s ease; }
+    .logo-fallback.is-hidden { opacity: 0; }
+
+    .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
+    .brand-text span:first-child { font-size: 17px; }
+    .brand-text span:last-child { color: var(--muted); font-size: 12px; font-weight: 600; }
+
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-links a {
+      padding: 9px 11px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+    .nav-links a:hover { color: var(--text); background: rgba(255, 255, 255, 0.07); }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+    .menu-toggle {
+      width: 44px;
+      height: 44px;
+      display: none;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+    }
+
+    .menu-toggle span, .menu-toggle span::before, .menu-toggle span::after {
+      width: 18px;
+      height: 2px;
+      display: block;
+      border-radius: 99px;
+      background: currentColor;
+      content: "";
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .menu-toggle span::before { transform: translateY(-6px); }
+    .menu-toggle span::after { transform: translateY(4px); }
+    .menu-toggle.is-open span { transform: rotate(45deg); }
+    .menu-toggle.is-open span::before { opacity: 0; }
+    .menu-toggle.is-open span::after { transform: translateY(-2px) rotate(-90deg); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 46px;
+      padding: 12px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn:hover { transform: translateY(-2px); border-color: rgba(0, 229, 255, 0.45); background: rgba(0, 229, 255, 0.08); }
+    .btn-primary { border-color: rgba(0, 229, 255, 0.55); color: #031015; background: linear-gradient(135deg, var(--cyan), var(--blue)); box-shadow: 0 16px 36px rgba(0, 229, 255, 0.2); }
+    .btn-primary:hover { color: #031015; background: linear-gradient(135deg, #4af1ff, #4f94ff); }
+    .btn-ghost { color: var(--text); background: rgba(255, 255, 255, 0.04); }
+
+    .hero { min-height: calc(100vh - 76px); display: flex; align-items: center; padding: 96px 0 76px; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr); align-items: center; gap: 48px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+    .hero-proof { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 34px; max-width: 690px; }
+    .proof-item { padding: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(255, 255, 255, 0.045); }
+    .proof-item strong { display: block; margin-bottom: 3px; color: var(--text); font-size: 18px; }
+    .proof-item span { color: var(--muted); font-size: 13px; }
+
+    .hero-preview { position: relative; border: 1px solid rgba(0, 229, 255, 0.22); border-radius: var(--radius); background: linear-gradient(180deg, rgba(18, 26, 39, 0.95), rgba(7, 10, 16, 0.92)); box-shadow: var(--shadow); overflow: hidden; }
+    .preview-topbar { height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px; border-bottom: 1px solid var(--line); background: rgba(255, 255, 255, 0.03); }
+    .window-dots { display: flex; gap: 7px; }
+    .window-dots span { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); }
+    .preview-status { color: var(--cyan); font-size: 12px; font-weight: 800; }
+    .preview-body { padding: 20px; }
+    .mini-toolbar { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 16px; }
+    .mini-search, .modal-search { min-height: 42px; display: flex; align-items: center; gap: 9px; padding: 0 13px; border: 1px solid var(--line); border-radius: var(--radius); color: var(--muted); background: rgba(255, 255, 255, 0.055); font-size: 14px; }
+    .mini-chip, .pill { display: inline-flex; align-items: center; min-height: 34px; padding: 7px 11px; border: 1px solid rgba(0, 229, 255, 0.24); border-radius: 999px; color: var(--cyan); background: rgba(0, 229, 255, 0.07); font-size: 13px; font-weight: 800; white-space: nowrap; }
+    .preview-products { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .mini-product { min-height: 132px; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(255, 255, 255, 0.045); }
+    .mini-image { height: 54px; margin-bottom: 10px; border-radius: 7px; background: linear-gradient(135deg, rgba(0, 229, 255, 0.28), transparent 60%), rgba(255, 255, 255, 0.08); }
+    .mini-line { height: 8px; margin-bottom: 8px; border-radius: 99px; background: rgba(255, 255, 255, 0.16); }
+    .mini-line.short { width: 58%; background: rgba(0, 229, 255, 0.38); }
+
+    .grid-3, .grid-4, .grid-2, .target-grid { display: grid; gap: 16px; }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .target-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card, .pricing-card, .demo-card, .contact-card { position: relative; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); backdrop-filter: blur(18px); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18); }
+    .card { padding: 22px; }
+    .icon-box { width: 42px; height: 42px; display: grid; place-items: center; margin-bottom: 18px; border: 1px solid rgba(0, 229, 255, 0.34); border-radius: 50%; color: var(--cyan); background: rgba(0, 229, 255, 0.07); }
+    .icon-box svg { width: 21px; height: 21px; }
+    .problem-card { min-height: 220px; }
+    .service-card { min-height: 240px; }
+    .target-card { padding: 18px; min-height: 154px; }
+    .target-card h3 { font-size: 17px; }
+    .target-card p { margin-bottom: 0; color: var(--muted); font-size: 14px; }
+
+    .pricing-wrap { align-items: stretch; }
+    .pricing-card { display: flex; flex-direction: column; padding: 24px; overflow: hidden; }
+    .pricing-card.featured { border-color: rgba(0, 229, 255, 0.48); background: linear-gradient(180deg, rgba(0, 229, 255, 0.1), rgba(15, 22, 34, 0.86)); box-shadow: 0 24px 80px rgba(0, 229, 255, 0.12); }
+    .pricing-badge, .demo-badge, .product-badge { display: inline-flex; align-items: center; width: max-content; min-height: 30px; padding: 6px 10px; border: 1px solid rgba(0, 229, 255, 0.35); border-radius: 999px; color: var(--cyan); background: rgba(0, 229, 255, 0.08); font-size: 12px; font-weight: 850; }
+    .price { margin: 16px 0 10px; font-size: 34px; font-weight: 900; line-height: 1.05; }
+    .price span { display: block; margin-top: 5px; color: var(--muted); font-size: 14px; font-weight: 700; }
+    .feature-list { display: grid; gap: 10px; margin: 22px 0 24px; padding: 0; list-style: none; }
+    .feature-list li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; color: var(--soft); font-size: 14px; }
+    .feature-list li::before { content: ""; width: 18px; height: 18px; margin-top: 2px; border: 1px solid rgba(0, 229, 255, 0.32); border-radius: 50%; background: linear-gradient(135deg, transparent 48%, var(--cyan) 50%, var(--cyan) 58%, transparent 60%), rgba(0, 229, 255, 0.08); }
+    .pricing-card .btn { width: 100%; margin-top: auto; }
+    .pricing-note { margin: 18px 0 0; padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--radius); color: var(--soft); background: rgba(255, 255, 255, 0.045); font-size: 14px; }
+    .trust-card { min-height: 220px; }
+
+    .demo-card { display: flex; flex-direction: column; min-height: 390px; padding: 18px; overflow: hidden; }
+    .demo-visual { min-height: 160px; margin-bottom: 18px; padding: 14px; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: var(--radius); background: rgba(255, 255, 255, 0.045); }
+    .demo-mini-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 12px; }
+    .demo-mini-item { height: 48px; border-radius: 7px; background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), transparent 65%), rgba(255, 255, 255, 0.08); }
+    .demo-card p { color: var(--muted); }
+    .demo-card .btn { width: 100%; margin-top: auto; }
+
+    .steps { counter-reset: step; }
+    .step-card { min-height: 230px; }
+    .step-card::before { counter-increment: step; content: counter(step, decimal-leading-zero); display: inline-flex; margin-bottom: 16px; color: var(--cyan); font-size: 34px; font-weight: 900; line-height: 1; }
+
+    .faq-list { display: grid; gap: 12px; }
+    .faq-item { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+    .faq-question { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 18px 20px; border: 0; color: var(--text); background: transparent; text-align: left; cursor: pointer; font-weight: 850; }
+    .faq-icon { width: 26px; height: 26px; flex: 0 0 26px; display: grid; place-items: center; border: 1px solid rgba(0, 229, 255, 0.28); border-radius: 50%; color: var(--cyan); }
+    .faq-icon::before { content: "+"; line-height: 1; }
+    .faq-item.is-open .faq-icon::before { content: "−"; }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+    .faq-answer p { margin: 0; padding: 0 20px 18px; color: var(--muted); }
+
+    .contact-panel { padding: 28px; border: 1px solid rgba(0, 229, 255, 0.2); border-radius: var(--radius); background: linear-gradient(180deg, rgba(0, 229, 255, 0.08), rgba(255, 255, 255, 0.04)); }
+    .contact-card { padding: 22px; }
+    .contact-card strong { display: block; margin-bottom: 8px; font-size: 19px; }
+    .contact-card span { display: block; margin-bottom: 18px; color: var(--muted); }
+
+    .site-footer { padding: 30px 0 34px; border-top: 1px solid var(--line); color: var(--muted); background: rgba(0, 0, 0, 0.18); }
+    .footer-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .floating-telegram { position: fixed; right: 20px; bottom: 20px; z-index: 45; display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 16px; border: 1px solid rgba(0, 229, 255, 0.48); border-radius: 999px; color: #031015; background: linear-gradient(135deg, var(--cyan), var(--blue)); box-shadow: 0 18px 44px rgba(0, 229, 255, 0.22); font-weight: 900; }
+    .floating-telegram svg { width: 20px; height: 20px; }
+
+    .modal-backdrop { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(2, 5, 10, 0.72); backdrop-filter: blur(18px); }
+    .modal-backdrop.is-open { display: flex; }
+    .demo-modal { width: min(980px, 100%); max-height: min(88vh, 900px); display: flex; flex-direction: column; border: 1px solid rgba(0, 229, 255, 0.26); border-radius: var(--radius); background: linear-gradient(180deg, rgba(14, 20, 31, 0.98), rgba(5, 7, 11, 0.98)); box-shadow: var(--shadow); overflow: hidden; }
+    .modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 20px; border-bottom: 1px solid var(--line); }
+    .modal-title { margin-bottom: 6px; font-size: 25px; }
+    .modal-close { width: 42px; height: 42px; flex: 0 0 42px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--text); background: rgba(255, 255, 255, 0.06); cursor: pointer; }
+    .modal-body { padding: 20px; overflow: auto; }
+    .modal-tools { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; margin-bottom: 18px; }
+    .pill-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 3px; }
+    .modal-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .product-card { position: relative; display: flex; flex-direction: column; min-height: 260px; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(255, 255, 255, 0.045); }
+    .product-image { height: 116px; display: grid; place-items: center; margin-bottom: 12px; border-radius: 7px; color: rgba(255, 255, 255, 0.75); background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), transparent 62%), linear-gradient(45deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)); font-weight: 900; letter-spacing: 0; }
+    .product-card h4 { margin: 0 0 7px; font-size: 16px; line-height: 1.25; }
+    .product-price { margin: 0 0 14px; color: var(--cyan); font-weight: 900; }
+    .product-card .btn { width: 100%; min-height: 40px; margin-top: auto; padding: 9px 12px; font-size: 14px; }
+    .product-badge { position: absolute; top: 22px; left: 22px; z-index: 2; color: #031015; background: var(--cyan); }
+
+    .fade-in { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .fade-in.is-visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 980px) {
+      .hero-grid, .grid-3, .grid-4, .grid-2 { grid-template-columns: 1fr; }
+      .target-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .modal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero { min-height: auto; }
+      .nav-links { position: fixed; top: 76px; left: 16px; right: 16px; display: none; flex-direction: column; align-items: stretch; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(5, 7, 11, 0.96); box-shadow: var(--shadow); }
+      .nav-links.is-open { display: flex; }
+      .nav-links a { border-radius: var(--radius); }
+      .menu-toggle { display: grid; }
+      .nav-actions .btn { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      .container { width: min(100% - 24px, var(--container)); }
+      .section { padding: 64px 0; }
+      .hero { padding-top: 64px; }
+      h1 { font-size: clamp(38px, 12vw, 52px); }
+      .hero-actions, .hero-actions .btn, .contact-panel .btn { width: 100%; }
+      .hero-proof, .preview-products, .target-grid, .modal-grid { grid-template-columns: 1fr; }
+      .mini-toolbar { grid-template-columns: 1fr; }
+      .modal-backdrop { align-items: flex-end; padding: 10px; }
+      .demo-modal { max-height: 92vh; }
+      .modal-header, .modal-body { padding: 16px; }
+      .product-card { min-height: 230px; }
+      .floating-telegram { right: 12px; bottom: 12px; min-height: 48px; padding: 0 13px; font-size: 14px; }
+      .footer-row { padding-bottom: 54px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#hero" aria-label="Sellora Plus bosh sahifa">
+        <span class="logo-shell" aria-hidden="true">
+          <img class="logo-img" src="logo-cropped.png" alt="" onload="this.classList.add('is-loaded'); this.nextElementSibling.classList.add('is-hidden');" onerror="this.remove();">
+          <svg class="logo-fallback" viewBox="0 0 64 64" role="img" aria-label="Sellora Plus fallback logo">
+            <circle cx="32" cy="32" r="30" fill="#05070b"></circle>
+            <path d="M14 34c8-17 28-20 40-7-10-5-21-2-29 6-5 5-9 6-11 1Z" fill="#ffffff"></path>
+            <path d="M50 30c-8 17-28 20-40 7 10 5 21 2 29-6 5-5 9-6 11-1Z" fill="#00e5ff"></path>
+            <circle cx="25" cy="27" r="4" fill="#ffffff"></circle>
+            <circle cx="38" cy="37" r="4" fill="#00e5ff"></circle>
+          </svg>
+        </span>
+        <span class="brand-text"><span>Sellora Plus</span><span>Web va katalog tizimlari</span></span>
+      </a>
+      <nav class="nav-links" id="navLinks" aria-label="Asosiy menyu">
+        <a href="#problem">Muammo</a><a href="#services">Xizmatlar</a><a href="#pricing">Tariflar</a><a href="#demo">Demo</a><a href="#process">Jarayon</a><a href="#faq">FAQ</a><a href="#contact">Aloqa</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="btn btn-primary" href="https://t.me/sellora_plus?text=Assalomu%20alaykum%2C%20sayt%20bo%E2%80%98yicha%20ma%E2%80%99lumot%20olmoqchiman." target="_blank" rel="noopener">Telegramga yozish</a>
+        <button class="menu-toggle" type="button" id="menuToggle" aria-label="Menyuni ochish" aria-controls="navLinks" aria-expanded="false"><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="hero"><div class="container hero-grid"><div class="fade-in"><span class="eyebrow">Sellora Plus</span><h1>Biznesingiz uchun web sayt, katalog va Telegram buyurtma tizimi</h1><p class="lead">Instagram sahifangizni tartibli online katalogga aylantiramiz: mahsulotlar, narxlar, kategoriyalar, qidiruv va Telegram orqali buyurtma qabul qilish bir joyda bo‘ladi.</p><div class="hero-actions"><a class="btn btn-primary" href="https://t.me/sellora_plus?text=Assalomu%20alaykum%2C%20sayt%20bo%E2%80%98yicha%20ma%E2%80%99lumot%20olmoqchiman." target="_blank" rel="noopener">Sayt bo‘yicha yozish</a><a class="btn btn-ghost" href="#demo">Demo ko‘rish</a></div><div class="hero-proof"><div class="proof-item"><strong>3 ta tarif</strong><span>START, GROW va PRO SYSTEM</span></div><div class="proof-item"><strong>Telegram</strong><span>Buyurtmalar sizga keladi</span></div><div class="proof-item"><strong>Katalog</strong><span>Mahsulotlar tartibli ko‘rinadi</span></div></div></div><div class="hero-preview fade-in" aria-label="Katalog sayt preview"><div class="preview-topbar"><div class="window-dots"><span></span><span></span><span></span></div><div class="preview-status">Online katalog</div></div><div class="preview-body"><div class="mini-toolbar"><div class="mini-search">Mahsulot qidirish</div><div class="mini-chip">Buyurtma tayyor</div></div><div class="preview-products"><div class="mini-product"><div class="mini-image"></div><div class="mini-line"></div><div class="mini-line short"></div></div><div class="mini-product"><div class="mini-image"></div><div class="mini-line"></div><div class="mini-line short"></div></div><div class="mini-product"><div class="mini-image"></div><div class="mini-line"></div><div class="mini-line short"></div></div><div class="mini-product"><div class="mini-image"></div><div class="mini-line"></div><div class="mini-line short"></div></div></div></div></div></div></section>
+
+    <section class="section compact" id="problem"><div class="container"><div class="section-header fade-in"><span class="eyebrow">Muammo</span><h2>Instagram bor, lekin mijozga tartibli katalog kerak</h2><p class="lead">Postlar orasidan mahsulot topish, narx so‘rash va buyurtmani yozish mijoz uchun ortiqcha qadam bo‘lib qoladi.</p></div><div class="grid-3"><article class="card problem-card fade-in"><div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-4.3-4.3"></path><circle cx="11" cy="11" r="7"></circle></svg></div><h3>Mahsulotni topish qiyin</h3><p class="muted">Mijoz kerakli mahsulotni tez topa olmasa, ko‘pincha buyurtmani keyinga qoldiradi.</p></article><article class="card problem-card fade-in"><div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16"></path><path d="M4 12h10"></path><path d="M4 18h7"></path></svg></div><h3>Narx va ma’lumot tarqoq</h3><p class="muted">Rasm, narx, tavsif va kategoriya bir joyda bo‘lmasa, savollar ko‘payadi.</p></article><article class="card problem-card fade-in"><div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8"></path><path d="M12 17v4"></path><rect x="3" y="4" width="18" height="13" rx="2"></rect></svg></div><h3>Biznes ko‘rinishi ishonchga ta’sir qiladi</h3><p class="muted">Chiroyli sayt mijozga sizning biznesingiz jiddiy va tartibli ekanini ko‘rsatadi.</p></article></div></div></section>
+
+    <section class="section" id="services"><div class="container"><div class="section-header fade-in"><span class="eyebrow">Xizmatlar</span><h2>Sellora Plus nimalar qiladi?</h2><p class="lead">Biz kichik bizneslar uchun sotuvga yordam beradigan, tushunarli va qulay web yechimlar tayyorlaymiz.</p></div><div class="grid-4"><article class="card service-card fade-in"><div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M8 9h8"></path><path d="M8 14h5"></path></svg></div><h3>Landing page</h3><p class="muted">Xizmat, mahsulot yoki brendni aniq tushuntiradigan bir sahifali sayt.</p></article><article class="card service-card fade-in"><div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="7" height="7" rx="1"></rect><rect x="14" y="4" width="7" height="7" rx="1"></rect><rect x="3" y="15" width="7" height="5" rx="1"></rect><rect x="14" y="15" width="7" height="5" rx="1"></rect></svg></div><h3>Online katalog</h3><p class="muted">Mahsulot va xizmatlarni kategoriyalar, narxlar va rasm bilan tartibli ko‘rsatish.</p></article><article class="card service-card fade-in"><div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 4 10 15"></path><path d="m21 4-7 17-4-6-6-4 17-7Z"></path></svg></div><h3>Telegram buyurtma</h3><p class="muted">Mijoz tanlagan mahsulot bo‘yicha buyurtma xabari Telegramga yo‘naltiriladi.</p></article><article class="card service-card fade-in"><div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16"></path><path d="M7 7v13"></path><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg></div><h3>Admin panel</h3><p class="muted">PRO SYSTEM tarifida mahsulotlarni qo‘shish, o‘chirish va tahrirlash imkoniyati.</p></article></div></div></section>
+
+    <section class="section compact" id="who-for"><div class="container"><div class="section-header fade-in"><span class="eyebrow">Mos yo‘nalishlar</span><h2>Bu sayt kimlar uchun mos?</h2><p class="lead">Mahsulot yoki xizmatlarini tartibli ko‘rsatib, mijozni Telegram orqali buyurtmaga olib kelmoqchi bo‘lgan bizneslar uchun.</p></div><div class="target-grid"><article class="card target-card fade-in"><h3>Instagram magazinlar</h3><p>Mahsulotlarini katalog ko‘rinishida ko‘rsatmoqchi bo‘lgan sahifalar uchun.</p></article><article class="card target-card fade-in"><h3>Kitob do‘konlari</h3><p>Kitoblar, janrlar va narxlarni tartibli joylash uchun.</p></article><article class="card target-card fade-in"><h3>Kosmetika va parfyum do‘konlari</h3><p>Mahsulotlar, aksiya va yangi kelganlarni ajratib ko‘rsatish uchun.</p></article><article class="card target-card fade-in"><h3>Kiyim va aksessuar bizneslari</h3><p>Kolleksiya, o‘lcham va narxlarni qulay ko‘rsatish uchun.</p></article><article class="card target-card fade-in"><h3>Mebel va uy jihozlari do‘konlari</h3><p>Katta mahsulotlarni rasm, tavsif va narx bilan taqdim etish uchun.</p></article><article class="card target-card fade-in"><h3>Xizmat ko‘rsatuvchi bizneslar</h3><p>Xizmat turlari, narxlar va buyurtma yo‘lini aniq berish uchun.</p></article><article class="card target-card fade-in"><h3>Oziq-ovqat yoki fast food loyihalari</h3><p>Menyu, kategoriyalar va tez buyurtma tugmalarini joylash uchun.</p></article><article class="card target-card fade-in"><h3>Kurs, o‘quv markaz va shaxsiy brendlar</h3><p>Yo‘nalishlar, darslar va aloqa uchun ishonchli sahifa kerak bo‘lganda.</p></article></div></div></section>
+
+    <section class="section" id="pricing"><div class="container"><div class="section-header fade-in"><span class="eyebrow">Tariflar</span><h2>Narxlar aniq, imkoniyatlar tushunarli</h2><p class="lead">Har bir tarif biznes hajmiga qarab tanlanadi. START va GROW tariflarida admin panel ko‘rsatilmaydi.</p></div><div class="grid-3 pricing-wrap"><article class="pricing-card fade-in"><h3>START</h3><p class="muted">Boshlang‘ich online ko‘rinish uchun.</p><div class="price">450 000 <span>so‘m</span></div><ul class="feature-list"><li>Bosh sahifa dizayni</li><li>10–20 ta mahsulot/xizmat joylash</li><li>2–3 ta kategoriya</li><li>Mahsulot kartochkalari</li><li>Aloqa tugmalari</li><li>Buyurtmalarni Telegram orqali qabul qilish</li></ul><a class="btn btn-ghost" href="https://t.me/sellora_plus?text=Assalomu%20alaykum%2C%20START%20tarifi%20bo%E2%80%98yicha%20ma%E2%80%99lumot%20olmoqchiman." target="_blank" rel="noopener">START tanlash</a></article><article class="pricing-card featured fade-in"><span class="pricing-badge">Eng ko‘p tanlanadi</span><h3>GROW</h3><p class="muted">To‘liqroq katalog sayt kerak bo‘lgan bizneslar uchun.</p><div class="price">700 000 <span>so‘m</span></div><ul class="feature-list"><li>START tarifidagi imkoniyatlar</li><li>25–40 ta mahsulot/xizmat joylash</li><li>Mahsulot/xizmatlar katalogi</li><li>Kategoriyalar</li><li>Qidiruv funksiyasi</li><li>Alohida mahsulot sahifasi</li><li>Rasm, narx va tavsif joylash</li><li>Aksiya/yangi mahsulotlar bo‘limi</li><li>Buyurtmalarni Telegram orqali qabul qilish</li></ul><a class="btn btn-primary" href="https://t.me/sellora_plus?text=Assalomu%20alaykum%2C%20GROW%20tarifi%20bo%E2%80%98yicha%20ma%E2%80%99lumot%20olmoqchiman." target="_blank" rel="noopener">GROW tanlash</a></article><article class="pricing-card fade-in"><h3>PRO SYSTEM</h3><p class="muted">Katalog sayt + admin panel kerak bo‘lgan bizneslar uchun.</p><div class="price">1 500 000 <span>so‘m</span></div><ul class="feature-list"><li>GROW tarifidagi barcha imkoniyatlar</li><li>50 tagacha mahsulot/xizmat joylash</li><li>Admin panel</li><li>Mahsulot qo‘shish</li><li>Mahsulotni o‘chirish</li><li>Mahsulotni tahrirlash</li><li>Narxni o‘zgartirish</li><li>Mavjud/qolmadi statusi</li><li>Aksiya/chegirma qo‘shish</li><li>Yangi yoki tavsiya qilingan mahsulotlarni ajratish</li><li>Google qidiruv tizimiga tayyorlash</li><li>Domen va hosting ulashda yordam</li></ul><a class="btn btn-ghost" href="https://t.me/sellora_plus?text=Assalomu%20alaykum%2C%20PRO%20SYSTEM%20tarifi%20bo%E2%80%98yicha%20ma%E2%80%99lumot%20olmoqchiman." target="_blank" rel="noopener">PRO SYSTEM tanlash</a></article></div><p class="pricing-note fade-in">Domen, hosting, katta mahsulot bazasini to‘liq joylash, maxsus funksiyalar va avtomatik import alohida kelishiladi.</p></div></section>
+
+    <section class="section compact" id="trust"><div class="container"><div class="section-header fade-in"><span class="eyebrow">Ishonch</span><h2>Nima uchun Sellora Plus?</h2><p class="lead">Maqsadimiz oddiy: biznesingizga mos, tushunarli va mijozni buyurtmaga olib boradigan sayt tayyorlash.</p></div><div class="grid-4"><article class="card trust-card fade-in"><div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"></path></svg></div><h3>Aniq tariflar</h3><p class="muted">Boshlanishidan oldin narx, imkoniyatlar va ish hajmi aniq kelishiladi.</p></article><article class="card trust-card fade-in"><div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 4 10 15"></path><path d="m21 4-7 17-4-6-6-4 17-7Z"></path></svg></div><h3>Telegram orqali buyurtma</h3><p class="muted">Mijoz saytdan tanlagan mahsulot yoki xizmat bo‘yicha buyurtma Telegram orqali sizga keladi.</p></article><article class="card trust-card fade-in"><div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"></path><path d="M5 12h14"></path><rect x="3" y="3" width="18" height="18" rx="2"></rect></svg></div><h3>Keyinchalik kengaytirish mumkin</h3><p class="muted">Saytga keyinchalik admin panel, qo‘shimcha sahifalar yoki yangi funksiyalar qo‘shish mumkin.</p></article><article class="card trust-card fade-in"><div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></div><h3>Biznesga mos dizayn</h3><p class="muted">Sayt har bir biznes turiga mos uslubda tayyorlanadi: kitob, kosmetika, kiyim, mebel, xizmat va boshqa yo‘nalishlar.</p></article></div></div></section>
+
+    <section class="section" id="demo"><div class="container"><div class="section-header fade-in"><span class="eyebrow">Demo</span><h2>Qanday sayt olishingizni oldindan ko‘ring</h2><p class="lead">Quyidagi demo previewlar mijozga real katalog qanday ko‘rinishini ko‘rsatadi.</p></div><div class="grid-3"><article class="demo-card fade-in"><div class="demo-visual"><span class="demo-badge">Preview mavjud</span><div class="demo-mini-grid"><span class="demo-mini-item"></span><span class="demo-mini-item"></span><span class="demo-mini-item"></span><span class="demo-mini-item"></span></div></div><h3>Kitob do‘koni demo</h3><p>Kitoblar, janrlar, bestseller belgisi va buyurtma tugmalari bor katalog.</p><button class="btn btn-ghost" type="button" data-demo-open="books">Preview ko‘rish</button></article><article class="demo-card fade-in"><div class="demo-visual"><span class="demo-badge">Namuna ko‘rish</span><div class="demo-mini-grid"><span class="demo-mini-item"></span><span class="demo-mini-item"></span><span class="demo-mini-item"></span><span class="demo-mini-item"></span></div></div><h3>Kosmetika magazin demo</h3><p>Parfyum, skin care, aksiya va yangi mahsulotlar uchun premium katalog.</p><button class="btn btn-ghost" type="button" data-demo-open="cosmetics">Preview ko‘rish</button></article><article class="demo-card fade-in"><div class="demo-visual"><span class="demo-badge">Preview mavjud</span><div class="demo-mini-grid"><span class="demo-mini-item"></span><span class="demo-mini-item"></span><span class="demo-mini-item"></span><span class="demo-mini-item"></span></div></div><h3>Universal katalog demo</h3><p>Kiyim, mebel, texnika yoki xizmatlar uchun moslashadigan katalog ko‘rinishi.</p><button class="btn btn-ghost" type="button" data-demo-open="universal">Preview ko‘rish</button></article></div></div></section>
+
+    <section class="section compact" id="process"><div class="container"><div class="section-header fade-in"><span class="eyebrow">Jarayon</span><h2>Ish qanday ketadi?</h2><p class="lead">Loyiha boshlanishidan oldin biznes yo‘nalishi, mahsulotlar soni va kerakli funksiyalar kelishib olinadi.</p></div><div class="grid-4 steps"><article class="card step-card fade-in"><h3>Talabni aniqlaymiz</h3><p class="muted">Biznesingiz, mahsulotlar soni, kategoriyalar va asosiy maqsadni tushunib olamiz.</p></article><article class="card step-card fade-in"><h3>Strukturani tayyorlaymiz</h3><p class="muted">Sahifa bo‘limlari, katalog tartibi va buyurtma yo‘nalishini belgilaymiz.</p></article><article class="card step-card fade-in"><h3>Dizayn va saytni yig‘amiz</h3><p class="muted">Brendingizga mos ko‘rinish, kartochkalar, CTA va responsive holat tayyorlanadi.</p></article><article class="card step-card fade-in"><h3>Tekshirib topshiramiz</h3><p class="muted">Mobil ko‘rinish, tugmalar, Telegram yo‘nalishlari va asosiy matnlar tekshiriladi.</p></article></div></div></section>
+
+    <section class="section" id="why-website"><div class="container"><div class="section-header fade-in"><span class="eyebrow">Nega sayt kerak?</span><h2>Sayt mijozga aniq yo‘l ko‘rsatadi</h2><p class="lead">Ijtimoiy tarmoq tanitadi, sayt esa mahsulotni tartiblaydi va buyurtmani osonlashtiradi.</p></div><div class="grid-3"><article class="card fade-in"><h3>Ko‘proq ishonch</h3><p class="muted">Tartibli sayt biznesingizni jiddiyroq ko‘rsatadi va yangi mijozga ishonch beradi.</p></article><article class="card fade-in"><h3>Kamroq savol</h3><p class="muted">Narx, rasm, tavsif va kategoriya ko‘rinib turgani uchun mijoz tezroq qaror qiladi.</p></article><article class="card fade-in"><h3>Oson buyurtma</h3><p class="muted">Mijoz mahsulotni ko‘rib, bitta tugma orqali Telegramga yozadi.</p></article></div></div></section>
+
+    <section class="section compact" id="faq"><div class="container"><div class="section-header fade-in"><span class="eyebrow">FAQ</span><h2>Ko‘p so‘raladigan savollar</h2><p class="lead">Loyiha boshlashdan oldin eng kerakli savollarga qisqa javoblar.</p></div><div class="faq-list fade-in"><article class="faq-item"><button class="faq-question" type="button" aria-expanded="false">Domen va hosting narxga kiradimi?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><p>Yo‘q, domen va hosting alohida kelishiladi. Lekin ularni ulash va sozlashda yordam beramiz.</p></div></article><article class="faq-item"><button class="faq-question" type="button" aria-expanded="false">Mahsulotlarni o‘zim qo‘sha olamanmi?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><p>Bu imkoniyat PRO SYSTEM tarifida admin panel orqali beriladi.</p></div></article><article class="faq-item"><button class="faq-question" type="button" aria-expanded="false">Buyurtmalar qayerga keladi?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><p>Buyurtmalar Telegram orqali qabul qilinadigan qilib sozlanadi.</p></div></article><article class="faq-item"><button class="faq-question" type="button" aria-expanded="false">Sayt Google’da chiqadimi?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><p>Sayt Google qidiruv tizimiga tayyorlab beriladi. To‘liq SEO ishlari alohida kelishiladi.</p></div></article><article class="faq-item"><button class="faq-question" type="button" aria-expanded="false">Katta mahsulot bazasini joylab berasizmi?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><p>Ha, lekin katta mahsulot bazasini to‘liq joylash yoki avtomatik import alohida kelishiladi.</p></div></article><article class="faq-item"><button class="faq-question" type="button" aria-expanded="false">Ish qancha vaqtda tayyor bo‘ladi?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><p>Loyiha hajmiga qarab belgilanadi. START odatda tezroq, GROW va PRO SYSTEM esa funksiyalariga qarab ko‘proq vaqt talab qiladi.</p></div></article><article class="faq-item"><button class="faq-question" type="button" aria-expanded="false">Admin panel qaysi tarifda bo‘ladi?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><p>Admin panel faqat PRO SYSTEM tarifida mavjud. Bu orqali mahsulot qo‘shish, tahrirlash, narx va statuslarni boshqarish mumkin.</p></div></article><article class="faq-item"><button class="faq-question" type="button" aria-expanded="false">Saytga keyin qo‘shimcha funksiya qo‘shsa bo‘ladimi?<span class="faq-icon" aria-hidden="true"></span></button><div class="faq-answer"><p>Ha, saytni keyinchalik kengaytirish mumkin. Qo‘shimcha funksiyalar alohida kelishiladi.</p></div></article></div></div></section>
+
+    <section class="section" id="contact"><div class="container"><div class="contact-panel fade-in"><div class="section-header"><span class="eyebrow">Aloqa</span><h2>Biznesingiz uchun sayt kerakmi? Telegram orqali yozing.</h2><p class="lead">Loyihangiz yo‘nalishi, mahsulotlar soni va kerakli funksiyalarni yozing. Mos tarif va ish hajmini aniqlab beramiz.</p></div><div class="grid-2"><article class="contact-card"><strong>Telegram orqali yozish</strong><span>@sellora_plus</span><a class="btn btn-primary" href="https://t.me/sellora_plus?text=Assalomu%20alaykum%2C%20sayt%20bo%E2%80%98yicha%20ma%E2%80%99lumot%20olmoqchiman." target="_blank" rel="noopener">Telegramga o‘tish</a></article><article class="contact-card"><strong>Instagram sahifamiz</strong><span>@sellora.plus</span><a class="btn btn-ghost" href="https://www.instagram.com/sellora.plus" target="_blank" rel="noopener">Instagramga o‘tish</a></article></div></div></div></section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-row"><span>© 2026 Sellora Plus. Web sayt, katalog va buyurtma tizimlari.</span><span>Telegram: @sellora_plus · Instagram: @sellora.plus</span></div></footer>
+  <a class="floating-telegram" href="https://t.me/sellora_plus?text=Assalomu%20alaykum%2C%20sayt%20bo%E2%80%98yicha%20ma%E2%80%99lumot%20olmoqchiman." target="_blank" rel="noopener" aria-label="Telegram orqali bog‘lanish"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 4 10 15"></path><path d="m21 4-7 17-4-6-6-4 17-7Z"></path></svg>Telegram</a>
+
+  <div class="modal-backdrop" id="demoModal" aria-hidden="true"><section class="demo-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-header"><div><span class="demo-badge" id="modalBadge">Preview mavjud</span><h3 class="modal-title" id="modalTitle">Demo preview</h3><p class="muted" id="modalDescription"></p></div><button class="modal-close" type="button" data-modal-close aria-label="Modalni yopish">×</button></div><div class="modal-body"><div class="modal-tools"><div class="modal-search" id="modalSearch">Qidirish</div><div class="pill-row" id="modalPills"></div></div><div class="modal-grid" id="modalProducts"></div></div></section></div>
+
+  <script>
+    const telegramGeneral = "https://t.me/sellora_plus?text=Assalomu%20alaykum%2C%20sayt%20bo%E2%80%98yicha%20ma%E2%80%99lumot%20olmoqchiman.";
+    const menuToggle = document.getElementById("menuToggle");
+    const navLinks = document.getElementById("navLinks");
+    menuToggle.addEventListener("click", () => { const isOpen = navLinks.classList.toggle("is-open"); menuToggle.classList.toggle("is-open", isOpen); menuToggle.setAttribute("aria-expanded", String(isOpen)); });
+    navLinks.querySelectorAll("a").forEach((link) => { link.addEventListener("click", () => { navLinks.classList.remove("is-open"); menuToggle.classList.remove("is-open"); menuToggle.setAttribute("aria-expanded", "false"); }); });
+    document.querySelectorAll(".faq-question").forEach((button) => { button.addEventListener("click", () => { const item = button.closest(".faq-item"); const answer = item.querySelector(".faq-answer"); const isOpen = item.classList.contains("is-open"); document.querySelectorAll(".faq-item").forEach((faq) => { faq.classList.remove("is-open"); faq.querySelector(".faq-question").setAttribute("aria-expanded", "false"); faq.querySelector(".faq-answer").style.maxHeight = null; }); if (!isOpen) { item.classList.add("is-open"); button.setAttribute("aria-expanded", "true"); answer.style.maxHeight = answer.scrollHeight + "px"; } }); });
+    const demos = { books: { title: "Kitob do‘koni demo", description: "Janrlar, qidiruv, bestseller belgisi va Telegram buyurtma tugmalari bilan mini katalog.", search: "Kitob nomi yoki muallifni qidirish", pills: ["Badiiy", "Biznes", "Diniy", "Bolalar"], products: [{ name: "Atom odatlar", price: "79 000 so‘m", badge: "Bestseller", code: "KITOB" }, { name: "Halol rizq sari", price: "58 000 so‘m", code: "DIN" }, { name: "Bolalar uchun ertaklar", price: "45 000 so‘m", code: "ERTAK" }, { name: "Biznes fikrlash", price: "89 000 so‘m", code: "BIZ" }] }, cosmetics: { title: "Kosmetika magazin demo", description: "Parfyum, skin care, aksiya va yangi mahsulotlar uchun chiroyli katalog preview.", search: "Mahsulot nomini qidirish", pills: ["Parfyum", "Skin Care", "Aksiya", "Yangi"], products: [{ name: "Velvet parfyum", price: "180 000 so‘m", badge: "-20%", code: "PARF" }, { name: "Glow serum", price: "125 000 so‘m", code: "SERUM" }, { name: "Hydra cream", price: "95 000 so‘m", code: "CREAM" }, { name: "Soft mist", price: "72 000 so‘m", code: "MIST" }] }, universal: { title: "Universal katalog demo", description: "Kiyim, mebel, texnika yoki xizmatlar uchun moslashadigan katalog namuna.", search: "Mahsulot yoki xizmatni qidirish", pills: ["Kiyim", "Mebel", "Texnika", "Xizmatlar"], products: [{ name: "Premium hoodie", price: "220 000 so‘m", code: "KIYIM" }, { name: "Minimal stol", price: "Kelishiladi", code: "MEBEL" }, { name: "Smart watch", price: "390 000 so‘m", code: "TECH" }, { name: "Yetkazib berish xizmati", price: "Kelishiladi", code: "SERV" }] } };
+    const modal = document.getElementById("demoModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDescription = document.getElementById("modalDescription");
+    const modalSearch = document.getElementById("modalSearch");
+    const modalPills = document.getElementById("modalPills");
+    const modalProducts = document.getElementById("modalProducts");
+    function openDemo(key) { const demo = demos[key]; if (!demo) return; modalTitle.textContent = demo.title; modalDescription.textContent = demo.description; modalSearch.textContent = demo.search; modalPills.innerHTML = demo.pills.map((pill) => `<span class="pill">${pill}</span>`).join(""); modalProducts.innerHTML = demo.products.map((product) => `<article class="product-card">${product.badge ? `<span class="product-badge">${product.badge}</span>` : ""}<div class="product-image">${product.code}</div><h4>${product.name}</h4><p class="product-price">${product.price}</p><a class="btn btn-primary" href="${telegramGeneral}" target="_blank" rel="noopener">Buyurtma</a></article>`).join(""); modal.classList.add("is-open"); modal.setAttribute("aria-hidden", "false"); document.body.classList.add("no-scroll"); modal.querySelector("[data-modal-close]").focus(); }
+    function closeDemo() { modal.classList.remove("is-open"); modal.setAttribute("aria-hidden", "true"); document.body.classList.remove("no-scroll"); }
+    document.querySelectorAll("[data-demo-open]").forEach((button) => { button.addEventListener("click", () => openDemo(button.dataset.demoOpen)); });
+    document.querySelector("[data-modal-close]").addEventListener("click", closeDemo);
+    modal.addEventListener("click", (event) => { if (event.target === modal) closeDemo(); });
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape" && modal.classList.contains("is-open")) closeDemo(); });
+    const observer = new IntersectionObserver((entries) => { entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add("is-visible"); observer.unobserve(entry.target); } }); }, { threshold: 0.12 });
+    document.querySelectorAll(".fade-in").forEach((element) => observer.observe(element));
+  </script>
+</body>
+</html>
